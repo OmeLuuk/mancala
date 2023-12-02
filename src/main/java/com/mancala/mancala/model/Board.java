@@ -15,7 +15,7 @@ public class Board {
         pits[13] = 0; // Player 2's store
     }
 
-    public String toHTML() {
+    public String toHTML(boolean isCurrentPlayer, Player player) {
         StringBuilder html = new StringBuilder();
         html.append("<html><head><title>Mancala Game</title></head><body>");
         html.append("<h1>Current Game State</h1><table><tr>");
@@ -25,13 +25,29 @@ public class Board {
 
         // Display player 1's pits
         for (int i = 12; i > 6; i--) {
-            html.append("<td style='width: 50px; text-align: center;'><a href='/move/").append(i).append("' style='color: blue;'>").append(pits[i]).append("</a></td>");
+            html.append("<td style='width: 50px; text-align: center;'>");
+            if (isCurrentPlayer && player == Player.blue) {
+                html.append("<a href='/move/").append(i).append("' style='color: blue;'>");
+            }
+            html.append(pits[i]);
+            if (isCurrentPlayer && player == Player.blue) {
+                html.append("</a>");
+            }
+            html.append("</td>");
         }
 
         // Display player 2's pits
         html.append("</tr><tr><td></td>"); // Skip the first cell for alignment
         for (int i = 0; i < 6; i++) {
-            html.append("<td style='width: 50px; text-align: center;'><a href='/move/").append(i).append("' style='color: red;'>").append(pits[i]).append("</a></td>");
+            html.append("<td style='width: 50px; text-align: center;'>");
+            if (isCurrentPlayer && player == Player.red) {
+                html.append("<a href='/move/").append(i).append("' style='color: red;'>");
+            }
+            html.append(pits[i]);
+            if (isCurrentPlayer && player == Player.red) {
+                html.append("</a>");
+            }
+            html.append("</td>");
         }
 
         // Display player 2's larger pit
