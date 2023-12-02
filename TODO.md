@@ -1,6 +1,8 @@
 # To-Do List for Mancala Game Project
 
 ## Essential Features and Improvements
+- **Quick Code ToDos:
+  - Currently the colors for player board drawing are hardcoded in the strings
 - **Basic Game Rules**: 
   - Implement stone distribution logic.
   - Add rules for capturing stones.
