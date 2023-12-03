@@ -1,8 +1,8 @@
 package com.mancala.mancala.model;
 
 public enum Player {
-    blue,
-    red;
+    red,
+    blue;
 
     public Player next() {
         // Assuming two players for now; can be updated for more players

@@ -40,6 +40,8 @@
 - **More than two players**:
   - Some of the code already allows for n players, but some of the code only works for two players
   - This would require a change in how we display the board as well
+- **Dynamic number of pits and number of stones for custom games
+  - The board is now hard coded to have 6 pits with 6 stones each for each player
 
 ## Ongoing Tasks
 - **Refine UI**:

@@ -3,10 +3,10 @@ package com.mancala.mancala.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Game {
+public class Game implements IGame{
     protected boolean gameOver = false;
     protected Player[] winners;
-    protected Board board;
+    protected IBoard board;
     protected Player currentPlayer;
     protected boolean isBluePlayerAssigned;
     protected boolean isRedPlayerAssigned;
@@ -27,6 +27,7 @@ public class Game {
             {
                 html.append("<h3><span style='color:").append(p).append(";'>").append(p).append("</span></h3>");
             }
+            html.append("<form action='/start' method='get'><button type='submit'>Start New Game</button></form>");
             return html.toString();
         }
 
@@ -94,5 +95,10 @@ public class Game {
             gameOver = true;
             determineWinners();
         }
+    }
+
+    public boolean isGameOver()
+    {
+        return gameOver;
     }
 }

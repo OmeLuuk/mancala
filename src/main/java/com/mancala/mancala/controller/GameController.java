@@ -18,12 +18,17 @@ public class GameController {
 
     @GetMapping("/start")
     public String startGame(HttpSession session) {
+        // Check if there's an ongoing game; if so, reset it
+        if (game.isGameOver()) {
+            game = new Game(); // Reset the game
+        }
+
+        // Assign a new player for the new game
         if (session.getAttribute("player") == null) {
-            System.out.println("got a new player!");
             Player player = game.assignPlayer();
             session.setAttribute("player", player);
         }
-        return game.getHTML((Player)session.getAttribute("player")); // Return the initial state of the game
+        return game.getHTML((Player)session.getAttribute("player"));
     }
 
     @GetMapping("/move/{pitIndex}")

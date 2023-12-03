@@ -2,7 +2,7 @@ package com.mancala.mancala.model;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
-public class Board {
+public class Board implements IBoard {
     protected int[] pits = new int[14]; // 12 small pits + 2 larger pits
 
     public Board() {

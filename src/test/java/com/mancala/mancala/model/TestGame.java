@@ -7,11 +7,6 @@ public class TestGame extends Game
         return currentPlayer;
     }
 
-    public boolean isGameOver()
-    {
-        return gameOver;
-    }
-
     public void setBoard(Board board)
     {
         this.board = board;
