@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private boolean gameOver = false;
-    private Player[] winners;
-    private final Board board;
-    private Player currentPlayer;
-    private boolean isBluePlayerAssigned;
-    private boolean isRedPlayerAssigned;
+    protected boolean gameOver = false;
+    protected Player[] winners;
+    protected Board board;
+    protected Player currentPlayer;
+    protected boolean isBluePlayerAssigned;
+    protected boolean isRedPlayerAssigned;
 
     public Game() {
         this.board = new Board();

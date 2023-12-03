@@ -3,7 +3,7 @@ package com.mancala.mancala.model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 public class Board {
-    private int[] pits = new int[14]; // 12 small pits + 2 larger pits
+    protected int[] pits = new int[14]; // 12 small pits + 2 larger pits
 
     public Board() {
         // Initialize the board with 6 stones in each small pit
@@ -59,10 +59,13 @@ public class Board {
 
     // This method is designed for only two players currently.
     public boolean makeMove(int pitIndex, Player player) {
-        if (player == Player.blue && pitIndex < 7 ||
-                player == Player.red && pitIndex > 6)
+        boolean triedInvalidMove =
+                player == Player.blue && pitIndex < 7 ||
+                player == Player.red && pitIndex > 6 ||
+                pits[pitIndex] == 0;
+        if (triedInvalidMove)
         {
-            return false;
+            return true; // Same player's turn again since the given move was not made
         }
 
         int stones = pits[pitIndex];
@@ -137,19 +140,5 @@ public class Board {
         {
             throw new IllegalArgumentException("Invalid player: " + player);
         }
-    }
-
-    // These are currently only used for testing. A cleaner approach would be to make pits protected
-    // and inherit the class into TestBoard and expose pits from there. For simplicity I chose to
-    // make them public in the main class for now, given that the game is a relatively small app
-    // and we want to quickly get to a testable MVP.
-    public int[] getPits()
-    {
-        return pits;
-    }
-
-    public void setPits(int[] pits)
-    {
-        this.pits = pits;
     }
 }

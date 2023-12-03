@@ -5,42 +5,25 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
-    private boolean areArraysEqual(int[] left, int[] right)
-    {
-        if (left.length != right.length)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < left.length; i++)
-        {
-            if (left[i] != right[i])
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-    private Board board;
+    private TestBoard board;
 
     @BeforeEach
     void setUp() {
-        board = new Board();
+        board = new TestBoard();
     }
 
     @Test
     void testInitialBoardSetup() {
-        assert(areArraysEqual(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   6, 6, 6, 6, 6, 6,   0 }));
+        assertArrayEquals(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   6, 6, 6, 6, 6, 6,   0 });
     }
 
     @Test
     void testIllegalMoveByBluePlayer() {
         // Assuming blue player's pits are 7 to 13
         boolean anotherTurn = board.makeMove(0, Player.blue); // This should be an illegal move
-        assertFalse(anotherTurn, "Blue player should not get another turn as it's an illegal move");
-        assertTrue(areArraysEqual(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   6, 6, 6, 6, 6, 6,   0 }),
-                "The baord should remain unchanged upon making an illegal move");
+        assertTrue(anotherTurn, "Blue player should get another turn as nothing happened after an illegal move");
+        assertArrayEquals(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   6, 6, 6, 6, 6, 6,   0 },
+                "The board should remain unchanged upon making an illegal move");
     }
 
     @Test
@@ -48,7 +31,7 @@ class BoardTest {
         // Test a valid move
         boolean anotherTurn = board.makeMove(7, Player.blue);
         assertTrue(anotherTurn, "Player should not get another turn on this move");
-        assertTrue(areArraysEqual(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   0, 7, 7, 7, 7, 7,   1} ),
+        assertArrayEquals(board.getPits(), new int[] { 6, 6, 6, 6, 6, 6,   0,   0, 7, 7, 7, 7, 7,   1},
                 "The 6 stones in pit 7 should be spread over the 6 pits after it");
     }
 
@@ -63,7 +46,7 @@ class BoardTest {
 
         // Expected state after capture
         int[] expectedPits = {0, 6, 6, 6, 0, 6,   0,   0, 0, 6, 6, 6, 6,   7};
-        assertTrue(areArraysEqual(board.getPits(), expectedPits),
+        assertArrayEquals(board.getPits(), expectedPits,
                 "We should capture the single stone and the opponent's stones because the next pit is empty");
     }
 
@@ -81,7 +64,7 @@ class BoardTest {
 
         // Expected state after the game-over move
         int[] expectedPits = {0, 0, 1, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 16}; // Assuming stones are collected in the store
-        assertTrue(areArraysEqual(board.getPits(), expectedPits),
+        assertArrayEquals(board.getPits(), expectedPits,
                 "Board state should match expected state at game over");
     }
 
@@ -99,8 +82,22 @@ class BoardTest {
 
         // Expected state after the move
         int[] expectedPits = {6, 6, 6, 6, 6, 1, 15, 6, 6, 6, 6, 6, 0, 21}; // Adjust based on your game rules
-        assertTrue(areArraysEqual(board.getPits(), expectedPits),
+        assertArrayEquals(board.getPits(), expectedPits,
                 "Board state should match expected state after multiple turns move");
     }
 
+    @Test
+    void testTryMoveOnEmptyPit() {
+        int[] customPits = {0, 0, 1, 0, 0, 0, 10, 1, 0, 0, 0, 0, 0, 15};
+        board.setPits(customPits);
+
+        // This move should do nothing since pit 9 is empty
+        boolean anotherTurn = board.makeMove(9, Player.blue);
+
+        // Assert that the player gets another turn
+        assertTrue(anotherTurn, "Player should get another turn if the selected pit was empty");
+
+        int[] expectedPits = {0, 0, 1, 0, 0, 0, 10, 1, 0, 0, 0, 0, 0, 15};
+        assertArrayEquals(board.pits, expectedPits, "The pits should remain unchanged after an empty move");
+    }
 }
