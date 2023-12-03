@@ -85,5 +85,22 @@ class BoardTest {
                 "Board state should match expected state at game over");
     }
 
+    @Test
+    void testMultipleTurns() {
+        // Setup a board state for testing multiple turns
+        int[] customPits = {6, 6, 6, 6, 6, 1, 15, 6, 6, 6, 6, 6, 1, 20};
+        board.setPits(customPits);
+
+        // Blue player makes a move from pit 12, ending in their own big pit
+        boolean anotherTurn = board.makeMove(12, Player.blue);
+
+        // Assert that the player gets another turn
+        assertTrue(anotherTurn, "Player should get another turn if the last stone lands in their big pit");
+
+        // Expected state after the move
+        int[] expectedPits = {6, 6, 6, 6, 6, 1, 15, 6, 6, 6, 6, 6, 0, 21}; // Adjust based on your game rules
+        assertTrue(areArraysEqual(board.getPits(), expectedPits),
+                "Board state should match expected state after multiple turns move");
+    }
 
 }
