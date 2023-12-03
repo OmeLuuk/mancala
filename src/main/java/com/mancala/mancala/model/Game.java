@@ -35,12 +35,28 @@ public class Game {
         if (!isBluePlayerAssigned) {
             isBluePlayerAssigned = true;
             return Player.blue;
-        } else if (!isRedPlayerAssigned) {
+        }
+        else if (!isRedPlayerAssigned) {
             isRedPlayerAssigned = true;
             return Player.red;
         }
         // Additional logic if needed for more players or handling errors
         return null;
+    }
+
+    public Player determineWinner() {
+        int blueStoreCount = board.getStoreCount(Player.blue);
+        int redStoreCount = board.getStoreCount(Player.red);
+
+        if (blueStoreCount > redStoreCount) {
+            return Player.blue;
+        }
+        else if (redStoreCount > blueStoreCount) {
+            return Player.red;
+        }
+        else {
+            return null; // or a specific value to indicate a tie
+        }
     }
 
     public boolean isPlayerTurn(Player player) {
