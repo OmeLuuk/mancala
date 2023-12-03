@@ -25,7 +25,7 @@ public class Game {
             html.append("<h3>Game Over! Winner(s):</h3>");
             for (Player p : winners)
             {
-                html.append("<h3><span style='color:").append(player).append(";'>").append(player).append("</span></h3>");
+                html.append("<h3><span style='color:").append(p).append(";'>").append(p).append("</span></h3>");
             }
             return html.toString();
         }
