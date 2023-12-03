@@ -46,6 +46,9 @@
 - **User Authentication**:
   - Design a simple login system.
   - Integrate user authentication with the game sessions.
+- **More than two players**:
+  - Some of the code already allows for n players, but some of the code only works for two players
+  - This would require a change in how we display the board as well
 
 ## Ongoing Tasks
 - **Refine UI**:

@@ -1,6 +1,11 @@
 package com.mancala.mancala.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Game {
+    private boolean gameOver = false;
+    private Player[] winners;
     private final Board board;
     private Player currentPlayer;
     private boolean isBluePlayerAssigned;
@@ -15,6 +20,15 @@ public class Game {
 
     public String getHTML(Player player) {
         StringBuilder html = new StringBuilder();
+
+        if (gameOver) {
+            html.append("<h3>Game Over! Winner(s):</h3>");
+            for (Player p : winners)
+            {
+                html.append("<h3><span style='color:").append(player).append(";'>").append(player).append("</span></h3>");
+            }
+            return html.toString();
+        }
 
         // Add game-related information like current player's turn
         html.append("<h2 style='color:").append(currentPlayer).append(";'>Current Turn: ").append(currentPlayer).append("</h2>");
@@ -44,19 +58,23 @@ public class Game {
         return null;
     }
 
-    public Player determineWinner() {
-        int blueStoreCount = board.getStoreCount(Player.blue);
-        int redStoreCount = board.getStoreCount(Player.red);
+    public void determineWinners() {
+        int maxScore = Integer.MIN_VALUE;
+        List<Player> winnerList = new ArrayList<>();
 
-        if (blueStoreCount > redStoreCount) {
-            return Player.blue;
+        for (Player player : Player.values()) {
+            int playerScore = board.getStoreCount(player);
+            if (playerScore > maxScore) {
+                maxScore = playerScore;
+                winnerList.clear(); // Clear the list for the new leading player
+                winnerList.add(player);
+            } else if (playerScore == maxScore) {
+                // Handle a tie by adding the player to the winnerList
+                winnerList.add(player);
+            }
         }
-        else if (redStoreCount > blueStoreCount) {
-            return Player.red;
-        }
-        else {
-            return null; // or a specific value to indicate a tie
-        }
+
+        winners = winnerList.toArray(new Player[0]);
     }
 
     public boolean isPlayerTurn(Player player) {
@@ -69,6 +87,12 @@ public class Game {
             if (!anotherTurn) {
                 currentPlayer = currentPlayer.next();
             }
+        }
+
+        if (board.isGameOver())
+        {
+            gameOver = true;
+            determineWinners();
         }
     }
 }
