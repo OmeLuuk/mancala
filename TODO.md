@@ -5,14 +5,6 @@
   - Currently the colors for player board drawing are hardcoded in the strings
 - **Basic Game Rules**: 
   - Implement stone distribution logic.
-  - Add rules for capturing stones.
-  - Handle the scenario where the last stone lands in an empty pit.
-- **Unit Testing**:
-  - Write tests for initial game setup.
-  - Test stone distribution and capturing rules.
-- **Track and Display Turns**: 
-  - Implement a turn system in the game logic.
-  - Update the UI to indicate the current player's turn.
 - **Dynamic Board Updates**:
   - Implement better solution for making a move than clicking links to intermediate pages
   - Update the board dynamically.
@@ -20,7 +12,6 @@
   - Document setup instructions.
   - Provide a brief overview of game rules and architecture.
 - **In-Memory Game State**:
-  - Store the current state of the game in memory.
   - Retrieve and update this state with each move.
 
 ## Enhancements for Scalability and Robustness
