@@ -29,7 +29,7 @@ public class Board implements IBoard {
             if (isCurrentPlayer && player == Player.blue) {
                 html.append("<a href='/move/").append(i).append("' style='color: blue;'>");
             }
-            html.append(pits[i]);
+            html.append("<button style='background:#3dd5e9;color:black;'>").append(pits[i]).append("</button>");
             if (isCurrentPlayer && player == Player.blue) {
                 html.append("</a>");
             }
@@ -43,7 +43,7 @@ public class Board implements IBoard {
             if (isCurrentPlayer && player == Player.red) {
                 html.append("<a href='/move/").append(i).append("' style='color: red;'>");
             }
-            html.append(pits[i]);
+            html.append("<button style='background:#f1807e;color:black;'>").append(pits[i]).append("</button>");
             if (isCurrentPlayer && player == Player.red) {
                 html.append("</a>");
             }
