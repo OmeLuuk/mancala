@@ -1,7 +1,5 @@
 package com.mancala.mancala.model;
 
-import org.springframework.web.bind.annotation.PathVariable;
-
 public class Board implements IBoard {
     private final int boardSize = 14; // 6 pits per player and one score pit
     private final int startStones = 6;

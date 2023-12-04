@@ -6,14 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mancala.mancala.websocket.GameWebSocketHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+
 import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
 
 @RestController
 public class GameController {
     private Game game;
+    private final GameWebSocketHandler webSocketHandler;
 
-    public GameController() {
+    @Autowired
+    public GameController(GameWebSocketHandler webSocketHandler) {
         this.game = new Game();
+        this.webSocketHandler = webSocketHandler;
     }
 
     @GetMapping("/start")
@@ -36,9 +45,18 @@ public class GameController {
         Player player = (Player) session.getAttribute("player");
         if (player != null && game.isPlayerTurn(player)) {
             game.makeMove(pitIndex, player);
+            try {
+                // Use the session ID for WebSocket notification
+                String sessionId = session.getId();
+                webSocketHandler.notifyClient(sessionId);
+            } catch (IOException e) {
+                // Handle exception
+                e.printStackTrace();
+            }
         }
         return game.getHTML(player); // Return the updated state of the game
     }
+
 
     @GetMapping("/game")
     public String gameBoard(HttpSession session) {

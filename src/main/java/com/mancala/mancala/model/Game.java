@@ -42,6 +42,15 @@ public class Game implements IGame{
 
         html.append("<a href='/game' style='color: black;'>Reload</a>");
 
+        html.append("<script>\n");
+        html.append("const socket = new WebSocket('ws://localhost:8080/game-websocket');\n");
+        html.append("socket.onmessage = function(event) {\n");
+        html.append("    if (event.data === 'update') {\n");
+        html.append("        window.location.reload();\n");
+        html.append("    }\n");
+        html.append("};\n");
+        html.append("</script>\n");
+
         return html.toString();
     }
 
