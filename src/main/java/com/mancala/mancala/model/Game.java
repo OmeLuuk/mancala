@@ -2,8 +2,11 @@ package com.mancala.mancala.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game implements IGame{
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
+    private final int gameId;
     protected boolean gameOver = false;
     protected Player[] winners;
     protected IBoard board;
@@ -12,13 +15,14 @@ public class Game implements IGame{
     protected boolean isRedPlayerAssigned;
 
     public Game() {
+        this.gameId = idCounter.getAndIncrement();
         this.board = new Board();
         this.currentPlayer = Player.blue; // Blue starts
         this.isBluePlayerAssigned = false;
         this.isRedPlayerAssigned = false;
     }
 
-    public String getHTML(Player player) {
+    public String getHTML(Player player, String sessionId) {
         StringBuilder html = new StringBuilder();
 
         if (gameOver) {
@@ -40,13 +44,11 @@ public class Game implements IGame{
         // Include the board's HTML
         html.append(this.board.toHTML(player == currentPlayer, player));
 
-        html.append("<a href='/game' style='color: black;'>Reload</a>");
-
         html.append("<script>\n");
-        html.append("const socket = new WebSocket('ws://localhost:8080/game-websocket');\n");
+        html.append("const socket = new WebSocket('ws://localhost:8080/game-websocket?sessionId=").append(sessionId).append("');\n");
         html.append("socket.onmessage = function(event) {\n");
         html.append("    if (event.data === 'update') {\n");
-        html.append("        window.location.reload();\n");
+        html.append("        window.location.href = '/game';\n");  // Redirect to the game endpoint
         html.append("    }\n");
         html.append("};\n");
         html.append("</script>\n");
@@ -109,5 +111,9 @@ public class Game implements IGame{
     public boolean isGameOver()
     {
         return gameOver;
+    }
+
+    public int getGameId() {
+        return gameId;
     }
 }

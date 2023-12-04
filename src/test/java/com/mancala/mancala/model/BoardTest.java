@@ -100,4 +100,17 @@ class BoardTest {
         int[] expectedPits = {0, 0, 1, 0, 0, 0, 10, 1, 0, 0, 0, 0, 0, 15};
         assertArrayEquals(board.pits, expectedPits, "The pits should remain unchanged after an empty move");
     }
+
+    @Test
+    void landSingleStoneInOtherPlayerEmptyPit()
+    {
+        int[] customPits = { 7, 7, 6, 6, 6, 6,   0,   0, 0, 8, 8, 8, 8,   2};
+        board.setPits(customPits);
+
+        boolean anotherTurn = board.makeMove(2, Player.red);
+        assertFalse(anotherTurn, "Player should not get another turn if last stone lands in opponent's pit");
+
+        int[] expectedPits = {7, 7, 0, 7, 7, 7,   1,   1, 1, 8, 8, 8, 8,   2};
+        assertArrayEquals(board.pits, expectedPits, "Nothing special should happen in this situation");
+    }
 }
