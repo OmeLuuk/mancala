@@ -56,20 +56,6 @@ public class Game implements IGame{
         return html.toString();
     }
 
-
-    public Player assignPlayer() {
-        if (!isBluePlayerAssigned) {
-            isBluePlayerAssigned = true;
-            return Player.blue;
-        }
-        else if (!isRedPlayerAssigned) {
-            isRedPlayerAssigned = true;
-            return Player.red;
-        }
-        // Additional logic if needed for more players or handling errors
-        return null;
-    }
-
     public void determineWinners() {
         int maxScore = Integer.MIN_VALUE;
         List<Player> winnerList = new ArrayList<>();
@@ -89,8 +75,17 @@ public class Game implements IGame{
         winners = winnerList.toArray(new Player[0]);
     }
 
-    public boolean isPlayerTurn(Player player) {
-        return currentPlayer == player;
+    // Method to add a player and return the assigned player
+    public Player addPlayer() {
+        if (!isBluePlayerAssigned) {
+            isBluePlayerAssigned = true;
+            return Player.blue;
+        } else if (!isRedPlayerAssigned) {
+            isRedPlayerAssigned = true;
+            return Player.red;
+        } else {
+            throw new IllegalStateException("Game is full.");
+        }
     }
 
     public void makeMove(int pitIndex, Player player) {
@@ -115,5 +110,14 @@ public class Game implements IGame{
 
     public int getGameId() {
         return gameId;
+    }
+
+    public Player getCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
+    public boolean isFull() {
+        return isBluePlayerAssigned && isRedPlayerAssigned;
     }
 }

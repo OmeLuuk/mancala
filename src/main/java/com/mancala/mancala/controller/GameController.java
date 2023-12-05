@@ -13,64 +13,79 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class GameController {
-    private Game game;
     private final GameWebSocketHandler webSocketHandler;
-    private final Map<Integer, Set<String>> gameSessionsMap = new ConcurrentHashMap<>();
+    private final Map<Integer, Game> games = new ConcurrentHashMap<>();
+    private final Map<String, Integer> sessionGameMap = new ConcurrentHashMap<>();
+    private int lastGameId = -1;
 
     @Autowired
     public GameController(GameWebSocketHandler webSocketHandler) {
-        this.game = new Game();
         this.webSocketHandler = webSocketHandler;
     }
 
     @GetMapping("/start")
     public String startGame(HttpSession session) {
-        if (game.isGameOver()) {
-            game = new Game();
-        }
-
-        if (session.getAttribute("player") == null) {
-            Player player = game.assignPlayer();
+        String sessionId = session.getId();
+        Game game;
+        if (!sessionGameMap.containsKey(sessionId)) {
+            game = getOrCreateGame();
+            Player player = game.addPlayer();
             session.setAttribute("player", player);
-
-            // Add the session ID to the game's session set
-            int gameId = game.getGameId();
-            gameSessionsMap.computeIfAbsent(gameId, k -> ConcurrentHashMap.newKeySet()).add(session.getId());
+            sessionGameMap.put(sessionId, game.getGameId());
+        } else {
+            game = games.get(sessionGameMap.get(sessionId));
         }
-        return game.getHTML((Player)session.getAttribute("player"), session.getId());
+        return game.getHTML((Player) session.getAttribute("player"), sessionId);
+    }
+
+    private Game getOrCreateGame() {
+        if (lastGameId == -1 || games.get(lastGameId).isFull()) {
+            Game newGame = new Game();
+            games.put(newGame.getGameId(), newGame);
+            lastGameId = newGame.getGameId();
+            return newGame;
+        } else {
+            return games.get(lastGameId);
+        }
     }
 
     @GetMapping("/move/{pitIndex}")
     public String makeMove(@PathVariable int pitIndex, HttpSession session) {
-        System.out.println("HTTP session ID: " + session.getId());
+        String sessionId = session.getId();
         Player player = (Player) session.getAttribute("player");
-        if (player != null && game.isPlayerTurn(player)) {
-            game.makeMove(pitIndex, player);
-            try {
-                int gameId = game.getGameId();
-                // Notify all sessions in the game
-                for (String otherSessionId : gameSessionsMap.getOrDefault(gameId, Set.of())) {
-                    if (!Objects.equals(otherSessionId, session.getId()))
-                        webSocketHandler.notifyClient(otherSessionId);
+        if (player != null) {
+            int gameId = sessionGameMap.get(sessionId);
+            Game game = games.get(gameId);
+            if (player == game.getCurrentPlayer()) {
+                game.makeMove(pitIndex, player);
+                try {
+                    notifyOtherPlayersInGame(sessionId, gameId);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
-        return game.getHTML(player, session.getId());
+        return games.get(sessionGameMap.get(sessionId)).getHTML(player, sessionId);
+    }
+
+    private void notifyOtherPlayersInGame(String sessionId, int gameId) throws IOException {
+        for (String otherSessionId : sessionGameMap.keySet()) {
+            if (!otherSessionId.equals(sessionId) && sessionGameMap.get(otherSessionId).equals(gameId)) {
+                webSocketHandler.notifyClient(otherSessionId);
+            }
+        }
     }
 
     @GetMapping("/game")
     public String gameBoard(HttpSession session) {
+        String sessionId = session.getId();
         Player player = (Player) session.getAttribute("player");
         if (player != null) {
-            return game.getHTML(player, session.getId());
+            return games.get(sessionGameMap.get(sessionId)).getHTML(player, sessionId);
         }
         return "redirect:/"; // Redirect to the start page if no player is set
     }
