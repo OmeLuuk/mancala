@@ -3,26 +3,16 @@
 ## Essential Features and Improvements
 - **Quick Code ToDos:
   - Currently the colors for player board drawing are hardcoded in the strings
-- **Basic Game Rules**: 
-  - Implement stone distribution logic.
 - **Dynamic Board Updates**:
   - Implement better solution for making a move than clicking links to intermediate pages
-  - Update the board dynamically.
 - **README File**:
   - Document setup instructions.
-  - Provide a brief overview of game rules and architecture.
-- **In-Memory Game State**:
-  - Retrieve and update this state with each move.
 
 ## Enhancements for Scalability and Robustness
-- **Concurrent Games**:
-  - Modify the application to handle multiple game instances.
-  - Use unique identifiers for each game session.
 - **Session Management**:
   - Implement session cookies to track players and games.
 - **Integration Testing**:
   - Test the integration of the frontend and backend.
-  - Ensure game state consistency throughout the game lifecycle.
 - **Deploy Application**:
   - Research hosting options (e.g., Heroku, AWS).
   - Deploy the application to something other than localhost:8080.
